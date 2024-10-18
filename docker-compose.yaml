@@ -1,0 +1,21 @@
+services:
+  nblocks-angular:
+    container_name: nblocks-angular
+    image: nblocks-angular:dev
+    build:
+      target: dev
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/home/appuser/app
+    restart: unless-stopped    
+    stdin_open: true
+    tty: true
+    ports:
+      - "4200:4200"
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    driver: bridge
