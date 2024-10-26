@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, from, firstValueFrom } from 'rxjs';
 import { NblocksClientService } from './nblocks-client.service';
 import { TokenService } from './token.service';
 import { LogService } from './log.service';
@@ -17,11 +17,13 @@ export class FlagsService {
   constructor(
     private nblocksClientService: NblocksClientService,
     private tokenService: TokenService,
-    private logService: LogService
-  ) {
+    private logService: LogService    
+  ) {    
     this.tokenService.accessToken$.subscribe(() => {
       this.doBulkEvaluation();
     });
+
+    this.doBulkEvaluation();
   }
 
   setContext(ctx: FlagContext | undefined) {
@@ -37,15 +39,21 @@ export class FlagsService {
     return flagsStorage.flags.some(flag => flag.flag === flagKey && flag.evaluation.enabled);
   }
 
+  initializeFlagStorage(): Observable<void> {
+    return from(this.doBulkEvaluation());
+  }
+
+
   private async doBulkEvaluation() {
-    try {
-      const accessToken = await this.tokenService.accessToken$.toPromise();
+    try {      
+      const accessToken = await firstValueFrom(this.tokenService.accessToken$);
       if (!accessToken) {
+        this.logService.log("No accessToken");
         return;
-      }
-      const nblocksClient = this.nblocksClientService.getNblocksClient();
-      const response = await nblocksClient.flag.bulkEvaluate({ accessToken, context: this.context });
-      this.logService.log("Got new flags!");
+      }      
+
+      const nblocksClient = this.nblocksClientService.getNblocksClient();      
+      const response = await nblocksClient.flag.bulkEvaluate({ accessToken, context: this.context });      
       this.flagsStorageSubject.next(response);
     } catch (error) {
       console.error(error);

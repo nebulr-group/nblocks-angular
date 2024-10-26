@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, TemplateRef, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FlagsService } from '../services/flags.service';
 
@@ -11,7 +11,7 @@ import { FlagsService } from '../services/flags.service';
     </ng-template>
   `
 })
-export class FeatureFlagComponent implements OnInit, OnDestroy {
+export class FeatureFlagComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() flagKey!: string;
   @ViewChild('container', { read: ViewContainerRef }) container!: ViewContainerRef;
   @ViewChild('content', { read: TemplateRef }) content!: TemplateRef<any>;
@@ -21,9 +21,15 @@ export class FeatureFlagComponent implements OnInit, OnDestroy {
   constructor(private flagsService: FlagsService) {}
 
   ngOnInit() {
+    // Move subscription to ngAfterViewInit
+  }
+
+  ngAfterViewInit() {
     this.subscription = this.flagsService.flagsStorage$.subscribe(() => {
       this.updateView();
     });
+    // Initial update
+    this.updateView();
   }
 
   ngOnDestroy() {
@@ -33,9 +39,11 @@ export class FeatureFlagComponent implements OnInit, OnDestroy {
   }
 
   private updateView() {
-    this.container.clear();
-    if (this.flagsService.flagEnabled(this.flagKey)) {
-      this.container.createEmbeddedView(this.content);
+    if (this.container && this.content) {
+      this.container.clear();
+      if (this.flagsService.flagEnabled(this.flagKey)) {
+        this.container.createEmbeddedView(this.content);
+      }
     }
   }
 }

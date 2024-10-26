@@ -4,11 +4,13 @@ import { NblocksModule } from 'nblocks-angular'; // Import the NblocksModule
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
 import { routes } from './app.routes'; // Import the routes
 
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent,
     // Other components
   ],
   imports: [
@@ -16,7 +18,7 @@ import { routes } from './app.routes'; // Import the routes
     NblocksModule.forRoot({
       appId: '671279b938f34e0008b0f80b',
       handoverPath: '/',
-      debug: true,
+      debug: false,
       stage: 'PROD',
       disableRedirects: false
     }),

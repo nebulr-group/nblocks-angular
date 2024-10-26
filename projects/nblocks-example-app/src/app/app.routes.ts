@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
 import { CallbackComponent, LoginComponent, LogoutComponent, ProtectedRouteGuard } from 'nblocks-angular';
 
 export const routes: Routes = [
     {
         path: '',
-        component: AppComponent, // Replace with your actual default component
+        component: HomeComponent,
         canActivate: [ProtectedRouteGuard]
     },
     {
@@ -19,6 +19,5 @@ export const routes: Routes = [
     {
         path:'auth/oauth-callback',
         component: CallbackComponent
-    }
-
+    },
 ];
