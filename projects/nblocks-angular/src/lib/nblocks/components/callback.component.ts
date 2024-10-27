@@ -7,7 +7,7 @@ import { NblocksConfigService } from '../services/nblocks-config.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-callback',
+  selector: 'nblocks-callback',
   template: '<p>Loading...</p>'
 })
 export class CallbackComponent implements OnInit {

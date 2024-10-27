@@ -2,7 +2,6 @@
  * Public API Surface of nblocks-angular
  */
 
-export * from './lib/nblocks-angular.component';
 export * from './lib/nblocks/nblocks.module';
 export * from './lib/nblocks/models/nblocks-config.model';
 export * from './lib/nblocks/services/nblocks-config.service';

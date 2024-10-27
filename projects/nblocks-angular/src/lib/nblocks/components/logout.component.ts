@@ -4,8 +4,8 @@ import { NblocksClientService } from '../services/nblocks-client.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-logout',
-  template: '<p>Logging out...</p>'
+  selector: 'nblocks-logout',
+  template: ''
 })
 export class LogoutComponent implements OnInit {
   constructor(

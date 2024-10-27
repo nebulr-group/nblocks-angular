@@ -5,7 +5,7 @@ import { NblocksClientService } from '../services/nblocks-client.service';
 import { LogService } from '../services/log.service';
 
 @Component({
-  selector: 'app-access-token-log',
+  selector: 'nblocks-access-token-log',
   template: ''
 })
 export class AccessTokenLogComponent implements OnInit, OnDestroy {

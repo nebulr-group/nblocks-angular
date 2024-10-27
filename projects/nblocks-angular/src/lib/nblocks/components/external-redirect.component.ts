@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-external-redirect',
+  selector: 'nblocks-external-redirect',
   template: '<p>Redirecting...</p>'
 })
 export class ExternalRedirectComponent implements OnInit {

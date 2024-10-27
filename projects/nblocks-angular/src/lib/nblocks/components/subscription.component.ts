@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-subscription',
-  template: '<p>Loading...</p>'
+  selector: 'nblocks-subscription',
+  template: ''
 })
 export class SubscriptionComponent implements OnInit {
   constructor(

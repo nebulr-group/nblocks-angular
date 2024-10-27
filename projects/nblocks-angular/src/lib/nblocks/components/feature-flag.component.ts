@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { FlagsService } from '../services/flags.service';
 
 @Component({
-  selector: 'app-feature-flag',
+  selector: 'nblocks-feature-flag',
   template: `
     <ng-container #container></ng-container>
     <ng-template #content>

@@ -5,7 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-team',
+  selector: 'nblocks-team',
   template: `
     <iframe *ngIf="portalUrl" [src]="portalUrl" style="width: 100%; height: 100%; border: none;"></iframe>
     <p *ngIf="!portalUrl">Loading...</p>
