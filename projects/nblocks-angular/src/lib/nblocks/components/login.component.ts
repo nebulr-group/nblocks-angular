@@ -1,30 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { TokenService } from '../services/token.service';
-import { NblocksClientService } from '../services/nblocks-client.service';
-import { Router } from '@angular/router';
+import { LoginService } from '../services/login.service';
 
 @Component({
   selector: 'app-login',
-  template: '<p>Redirecting to login...</p>'
+  template: ''
 })
 export class LoginComponent implements OnInit {
-  constructor(
-    private tokenService: TokenService,
-    private nblocksClientService: NblocksClientService,
-    private router: Router
-  ) {}
+  constructor(private loginService: LoginService) {}
 
   ngOnInit() {
-    this.tokenService.destroyTokens();
-    const nblocksClient = this.nblocksClientService.getNblocksClient();
-    const loginUrl = nblocksClient.auth.getLoginUrl();
-    
-    // Perform the redirect
-    if (loginUrl) {
-      window.location.href = loginUrl;
-    } else {
-      // If for some reason loginUrl is not available, redirect to home
-      this.router.navigate(['/']);
-    }
+    this.loginService.redirectToLogin();
   }
 }

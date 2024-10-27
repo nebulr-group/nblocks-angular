@@ -49,7 +49,7 @@ import { TokenService } from './services/token.service';
   ]
 })
 export class NblocksModule {
-  static forRoot(config: NblocksConfig): ModuleWithProviders<NblocksModule> {
+  static forRoot(config: Partial<NblocksConfig>): ModuleWithProviders<NblocksModule> {
     return {
       ngModule: NblocksModule,
       providers: [

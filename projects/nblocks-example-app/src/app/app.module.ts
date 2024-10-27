@@ -17,10 +17,7 @@ import { routes } from './app.routes'; // Import the routes
     BrowserModule,
     NblocksModule.forRoot({
       appId: '671279b938f34e0008b0f80b',
-      handoverPath: '/',
-      debug: false,
       stage: 'PROD',
-      disableRedirects: false
     }),
     RouterModule.forRoot(routes) // Use the imported routes here
   ],
