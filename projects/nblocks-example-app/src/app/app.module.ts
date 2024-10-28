@@ -18,6 +18,7 @@ import { routes } from './app.routes'; // Import the routes
     NblocksModule.forRoot({
       appId: '671279b938f34e0008b0f80b',
       stage: 'PROD',
+      debug: true
     }),
     RouterModule.forRoot(routes) // Use the imported routes here
   ],
