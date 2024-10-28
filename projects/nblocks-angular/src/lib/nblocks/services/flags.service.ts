@@ -21,9 +21,7 @@ export class FlagsService {
   ) {    
     this.tokenService.accessToken$.subscribe(() => {
       this.doBulkEvaluation();
-    });
-
-    this.doBulkEvaluation();
+    });    
   }
 
   setContext(ctx: FlagContext | undefined) {
