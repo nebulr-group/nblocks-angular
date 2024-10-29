@@ -9,11 +9,12 @@
     "test": "ng test",
     "start:example": "ng serve nblocks-example-app --host 0.0.0.0",
     "build:example": "ng build nblocks-example-app",
-    "test:example": "ng test nblocks-example-app",
+    "test:example": "ng test nblocks-example-app --browsers=ChromeHeadless --watch=false",
     "build:lib": "ng build nblocks-angular",
     "build:lib:watch": "ng build nblocks-angular --watch",
-    "test:lib": "ng test nblocks-angular",
-    "start:dev": "npm run build:lib && ng serve nblocks-example-app  --host 0.0.0.0",    
+    "test:lib": "ng test nblocks-angular --browsers=ChromeHeadless --watch=false",
+    "test:lib:coverage": "ng test nblocks-angular --browsers=ChromeHeadless --watch=false --code-coverage",
+    "start:dev": "npm run build:lib && ng serve nblocks-example-app  --host 0.0.0.0",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -28,23 +29,27 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@nebulr-group/nblocks-ts-client": "^5.4.1",
+    "@types/karma-coverage": "^2.0.3",
     "process": "^0.11.10",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.14.10"    
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.9",
     "@angular/cli": "^18.2.8",
     "@angular/compiler-cli": "^18.2.0",
     "@types/jasmine": "~5.1.0",
+    "@types/karma": "^6.3.9",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
+    "karma-html-reporter": "^0.2.7",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^18.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.5.2"
   }
 }

@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TokenManager } from '../core/token-manager';
+import { NblocksClientService } from './nblocks-client.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TokenService {
+export class TokenService implements OnDestroy {
+  private tokenManager: TokenManager;
   private accessTokenSubject = new BehaviorSubject<string | undefined>(undefined);
   private idTokenSubject = new BehaviorSubject<string | undefined>(undefined);
   private refreshTokenSubject = new BehaviorSubject<string | undefined>(undefined);
@@ -13,42 +16,59 @@ export class TokenService {
   idToken$: Observable<string | undefined> = this.idTokenSubject.asObservable();
   refreshToken$: Observable<string | undefined> = this.refreshTokenSubject.asObservable();
 
-  constructor() {
-    this.loadTokensFromStorage();
+  private unsubscribers: (() => void)[] = [];
+
+  constructor(nblocksClientService: NblocksClientService) {
+    const nblocksClient = nblocksClientService.getNblocksClient();
+    
+    this.tokenManager = new TokenManager(localStorage, {
+      getTokenExpiration: (token) => nblocksClient.auth.contextHelper.getTokenExpiration(token)
+    });
+    
+    this.setupSubscriptions();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribers.forEach(unsubscribe => unsubscribe());
+  }
+
+  private setupSubscriptions() {
+    this.unsubscribers.push(
+      this.tokenManager.subscribe('access', token => this.accessTokenSubject.next(token)),
+      this.tokenManager.subscribe('id', token => this.idTokenSubject.next(token)),
+      this.tokenManager.subscribe('refresh', token => this.refreshTokenSubject.next(token))
+    );
   }
 
   setAccessToken(token: string | undefined) {
-    this.accessTokenSubject.next(token);
-    this.saveTokenToStorage('NB_ACCESS_TOKEN', token);
+    this.tokenManager.setToken('access', token);
   }
 
   setIdToken(token: string | undefined) {
-    this.idTokenSubject.next(token);
-    this.saveTokenToStorage('NB_ID_TOKEN', token);
+    this.tokenManager.setToken('id', token);
   }
 
   setRefreshToken(token: string | undefined) {
-    this.refreshTokenSubject.next(token);
-    this.saveTokenToStorage('NB_REFRESH_TOKEN', token);
+    this.tokenManager.setToken('refresh', token);
+  }
+
+  getAccessToken(): string | undefined {
+    return this.tokenManager.getToken('access');
+  }
+
+  getRefreshToken(): string | undefined {
+    return this.tokenManager.getToken('refresh');
+  }
+
+  getIdToken(): string | undefined {
+    return this.tokenManager.getToken('id');
   }
 
   destroyTokens() {
-    this.setAccessToken(undefined);
-    this.setIdToken(undefined);
-    this.setRefreshToken(undefined);
+    this.tokenManager.destroyTokens();
   }
 
-  private loadTokensFromStorage() {
-    this.setAccessToken(localStorage.getItem('NB_ACCESS_TOKEN') || undefined);
-    this.setIdToken(localStorage.getItem('NB_ID_TOKEN') || undefined);
-    this.setRefreshToken(localStorage.getItem('NB_REFRESH_TOKEN') || undefined);
-  }
-
-  private saveTokenToStorage(key: string, token: string | undefined) {
-    if (token) {
-      localStorage.setItem(key, token);
-    } else {
-      localStorage.removeItem(key);
-    }
+  clearExpiredTokens() {
+    this.tokenManager.clearExpiredTokens();
   }
 }

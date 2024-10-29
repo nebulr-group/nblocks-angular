@@ -4,6 +4,7 @@ import { NblocksClientService } from './nblocks-client.service';
 import { TokenService } from './token.service';
 import { LogService } from './log.service';
 import { BulkEvaluationResponse, FlagContext } from '@nebulr-group/nblocks-ts-client';
+import { FlagsManager } from '../core/flags-manager';
 
 @Injectable({
   providedIn: 'root'
@@ -12,49 +13,43 @@ export class FlagsService {
   private flagsStorageSubject = new BehaviorSubject<BulkEvaluationResponse | undefined>(undefined);
   flagsStorage$: Observable<BulkEvaluationResponse | undefined> = this.flagsStorageSubject.asObservable();
 
-  private context: FlagContext | undefined;
+  private flagsManager: FlagsManager;
 
   constructor(
     private nblocksClientService: NblocksClientService,
     private tokenService: TokenService,
     private logService: LogService    
   ) {    
-    this.tokenService.accessToken$.subscribe(() => {
-      this.doBulkEvaluation();
+    this.flagsManager = new FlagsManager({
+      getFlagsClient: () => this.nblocksClientService.getNblocksClient().flag,
+      onFlagsUpdated: (flags) => this.flagsStorageSubject.next(flags),
+      onLog: (message) => this.logService.log(message),
+      onError: (error) => {
+        this.logService.logError('Flag evaluation failed:', error);
+        console.error(error);
+      }
+    });
+
+    this.tokenService.accessToken$.subscribe(token => {
+      this.evaluateFlags();
     });    
   }
 
-  setContext(ctx: FlagContext | undefined) {
-    this.context = ctx;
-    this.doBulkEvaluation();
+  setContext(ctx: FlagContext | undefined): void {
+    this.flagsManager.setContext(ctx);
+    this.evaluateFlags();
   }
 
   flagEnabled(flagKey: string): boolean {
-    const flagsStorage = this.flagsStorageSubject.getValue();
-    if (!flagsStorage) {
-      return false;
-    }
-    return flagsStorage.flags.some(flag => flag.flag === flagKey && flag.evaluation.enabled);
+    return this.flagsManager.flagEnabled(flagKey);
   }
 
   initializeFlagStorage(): Observable<void> {
-    return from(this.doBulkEvaluation());
+    return from(this.evaluateFlags());
   }
 
-
-  private async doBulkEvaluation() {
-    try {      
-      const accessToken = await firstValueFrom(this.tokenService.accessToken$);
-      if (!accessToken) {
-        this.logService.log("No accessToken");
-        return;
-      }      
-
-      const nblocksClient = this.nblocksClientService.getNblocksClient();      
-      const response = await nblocksClient.flag.bulkEvaluate({ accessToken, context: this.context });      
-      this.flagsStorageSubject.next(response);
-    } catch (error) {
-      console.error(error);
-    }
+  private async evaluateFlags(): Promise<void> {
+    const accessToken = await firstValueFrom(this.tokenService.accessToken$);
+    await this.flagsManager.evaluateFlags(accessToken);
   }
 }

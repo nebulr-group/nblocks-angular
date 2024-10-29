@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
 import { NblocksClientService } from '../services/nblocks-client.service';
 import { TokenService } from '../services/token.service';
 import { LogService } from '../services/log.service';
@@ -24,13 +23,12 @@ export class ProtectedRouteGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.tokenService.accessToken$.pipe(
-      take(1),
-      switchMap(accessToken => this.doAuthorize(accessToken))
-    );
+    return from(this.authorize());
   }
 
-  private async doAuthorize(accessToken: string | undefined): Promise<boolean> {
+  private async authorize(): Promise<boolean> {
+    const accessToken = this.tokenService.getAccessToken();
+
     if (!accessToken) {
       this.loginService.redirectToLogin();
       return false;
@@ -40,6 +38,7 @@ export class ProtectedRouteGuard implements CanActivate {
       const nblocksClient = this.nblocksClientService.getNblocksClient();
       const authCtx = await nblocksClient.auth.contextHelper.getAuthContextVerified(accessToken);
       const isGranted = this.isAuthenticated(authCtx);
+      
       this.logService.log(`User has ${isGranted ? '' : 'NOT'} the right to be on this route`);
       
       if (!isGranted) {
@@ -54,7 +53,7 @@ export class ProtectedRouteGuard implements CanActivate {
     }
   }
 
-  private isAuthenticated(authCtx: any): boolean {
+  private isAuthenticated(authCtx: { privileges: string[] }): boolean {
     return authCtx.privileges.includes(this.AUTHENTICATED_SCOPE);
   }
 }

@@ -2,25 +2,42 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TokenService } from './token.service';
 import { NblocksClientService } from './nblocks-client.service';
 import { LogService } from './log.service';
-import { NblocksConfigService } from './nblocks-config.service';
 import { Router } from '@angular/router';
-import { Subscription, timer } from 'rxjs';
-import { switchMap, filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { TokenRefresher } from '../core/token-refresher';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenRefresherService implements OnDestroy {
+  private tokenRefresher: TokenRefresher;
   private refreshSubscription: Subscription | null = null;
-  private readonly retrySec = 60;
 
   constructor(
     private tokenService: TokenService,
     private nblocksClientService: NblocksClientService,
     private logService: LogService,
-    private configService: NblocksConfigService,
     private router: Router
   ) {
+    const nblocksClient = this.nblocksClientService.getNblocksClient();
+
+    this.tokenRefresher = new TokenRefresher({
+      isRestrictedPath: () => this.isRestrictedPath(),
+      getTokenExpiration: (token) => nblocksClient.auth.contextHelper.getTokenExpiration(token),
+      refreshTokens: async (refreshToken) => {
+        const response = await nblocksClient.auth.refreshTokensAndVerify(refreshToken);
+        return {
+          access_token: response.tokens.access_token,
+          refresh_token: response.tokens.refresh_token,
+          id_token: response.tokens.id_token,
+          expires_in: response.tokens.expires_in
+        };
+      },
+      onLog: (message) => this.logService.log(message),
+      onError: (error) => console.error(error)
+    });
+
     this.setupTokenRefresh();
   }
 
@@ -28,40 +45,15 @@ export class TokenRefresherService implements OnDestroy {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
+    this.tokenRefresher.stopRefreshCycle();
   }
 
   private setupTokenRefresh() {
     this.refreshSubscription = this.tokenService.refreshToken$
-      .pipe(
-        filter(refreshToken => !!refreshToken && !this.isRestrictedPath()),
-        switchMap(refreshToken => this.refreshTokens(refreshToken!))
-      )
-      .subscribe();
-  }
-
-  private refreshTokens(refreshToken: string) {
-    return timer(0, this.retrySec * 1000).pipe(
-      switchMap(async () => {
-        try {
-          const nblocksClient = this.nblocksClientService.getNblocksClient();
-          const { tokens } = await nblocksClient.auth.refreshTokensAndVerify(refreshToken);
-          
-          this.tokenService.setAccessToken(tokens.access_token);
-          this.tokenService.setRefreshToken(tokens.refresh_token);
-          if (tokens.id_token) {
-            this.tokenService.setIdToken(tokens.id_token);
-          }
-
-          const expiresIn = Math.floor(tokens.expires_in * 0.9);
-          this.logService.log(`Tokens refreshed, scheduling new refresh in ${expiresIn} s because token expires in ${tokens.expires_in} s`);
-          return expiresIn * 1000;
-        } catch (error) {
-          console.error(error);
-          this.logService.log(`Due to previous error! Trying another refresh in ${this.retrySec}s`);
-          return this.retrySec * 1000;
-        }
-      })
-    );
+      .pipe(filter(refreshToken => !!refreshToken))
+      .subscribe(refreshToken => {
+        this.tokenRefresher.startRefreshCycle(refreshToken);
+      });
   }
 
   private isRestrictedPath(): boolean {
@@ -71,21 +63,6 @@ export class TokenRefresherService implements OnDestroy {
   }
 
   clearExpiredTokens() {
-    const nblocksClient = this.nblocksClientService.getNblocksClient();
-    const now = new Date().getTime();
-
-    this.tokenService.refreshToken$.pipe(filter(token => !!token)).subscribe(token => {
-      if (now > nblocksClient.auth.contextHelper.getTokenExpiration(token!) * 1000) {
-        this.logService.log('Expired refresh token. Removing!');
-        this.tokenService.setRefreshToken(undefined);
-      }
-    });
-
-    this.tokenService.accessToken$.pipe(filter(token => !!token)).subscribe(token => {
-      if (now > nblocksClient.auth.contextHelper.getTokenExpiration(token!) * 1000) {
-        this.logService.log('Expired access token. Removing!');
-        this.tokenService.setAccessToken(undefined);
-      }
-    });
+    this.tokenService.clearExpiredTokens();
   }
 }

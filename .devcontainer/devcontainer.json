@@ -29,11 +29,16 @@
 	// Uncomment the next line to run commands after the container is created.	
 
 	// Configure tool-specific properties.
-	// "customizations": {},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Angular.ng-template",
+				"ms-azuretools.vscode-docker",
+				"mhutchie.git-graph"
+			]
+		}
+	},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
-
-	// Add the IDs of extensions you want installed when the container is created.
-	// "extensions": []
+	// "remoteUser": "devcontainer"	
 }
