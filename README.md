@@ -1,27 +1,38 @@
-# NblocksAngular
+# Angular NBlocks Library
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.8.
+This Angular library simplifies integration with the NBlocks service ([https://www.nblocks.dev/](https://www.nblocks.dev/)).
 
-## Development server
+## Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+For basic usage, follow the in-app instructions after signing up and logging in to NBlocks.
 
-## Code scaffolding
+The provided quickstart ([https://nebulr-group.github.io/nblocks-docs/docs/getting-started/quickstart](https://nebulr-group.github.io/nblocks-docs/docs/getting-started/quickstart)) offers a general guide, but won't include your specific app details such as appId.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Development & Testing
 
-## Build
+**Example Project:**
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+This repository includes an example Angular project to help you test and understand the library.
 
-## Running unit tests
+**Running the Project:**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. Build the library for watching changes: `npm run build:lib:watch` (separate terminal)
+2. Start the example app: `npm run start:example` (separate terminal)
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Note a docker file is also provided to run the example app in a container. 
 
-## Further help
+**Library Functionality:**
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* **NBlocksModule:** Entry point for your application.
+* **ProtectedRouteGuard:** Restricts access to specific routes for logged-in users.
+* **LoginComponent:** Handles login redirection to NBlocks.
+* **CallbackComponent:** Manages NBlocks callback logic.
+* **Automatic token refreshes and storage:** Built-in functionality.
+* **Feature Flags Component:** Wrapper component for DOM elements.
+
+Refer to the quickstart and example project for detailed usage examples.
+
+## Compatibility
+
+This library is tested and validated for Angular version 18.28.

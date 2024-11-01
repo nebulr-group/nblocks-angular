@@ -5,7 +5,8 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { routes } from './app.routes'; // Import the routes
+import { routes } from './app.routes';
+import { MenuBarComponent } from "./nblocks/menu-bar/menu-bar.component"; // Import the routes
 
 @NgModule({
   declarations: [
@@ -16,12 +17,14 @@ import { routes } from './app.routes'; // Import the routes
   imports: [
     BrowserModule,
     NblocksModule.forRoot({
-      appId: '671279b938f34e0008b0f80b',
-      stage: 'PROD',
-      debug: true
+        appId: '671279b938f34e0008b0f80b',
+        stage: 'PROD',
+        debug: true
     }),
     RouterModule.forRoot(routes) // Use the imported routes here
-  ],
+    ,
+    MenuBarComponent
+],
   providers: [],
   bootstrap: [AppComponent]
 })

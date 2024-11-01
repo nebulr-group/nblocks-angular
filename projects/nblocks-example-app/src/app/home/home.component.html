@@ -1,7 +1,4 @@
-<!-- Move all the content from app.component.html to here -->
-<main class="main">
-  <!-- ... (rest of the content) ... -->
-</main>
+
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
 <!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
@@ -179,10 +176,21 @@
         margin-block: 1.5rem;
       }
     }
+
+    app-menu-bar{
+      width:100% ;
+    }
+
+    .main{
+      flex-direction: column;
+    }
   </style>
   
+  <app-menu-bar></app-menu-bar>  
   <main class="main">
+    
     <div class="content">
+      
       <div class="left-side">
         <svg
           xmlns="http://www.w3.org/2000/svg"

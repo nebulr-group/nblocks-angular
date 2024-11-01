@@ -3,7 +3,6 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AccessTokenLogComponent } from './components/access-token-log.component';
 import { CallbackComponent } from './components/callback.component';
-import { ExternalRedirectComponent } from './components/external-redirect.component';
 import { FeatureFlagComponent } from './components/feature-flag.component';
 import { LoginComponent } from './components/login.component';
 import { LogoutComponent } from './components/logout.component';
@@ -24,8 +23,7 @@ import { TokenService } from './services/token.service';
     CallbackComponent,
     FeatureFlagComponent,
     LoginComponent,
-    LogoutComponent,
-    ExternalRedirectComponent,
+    LogoutComponent,    
     SubscriptionComponent,
     TeamComponent
   ],
@@ -38,8 +36,7 @@ import { TokenService } from './services/token.service';
     CallbackComponent,
     FeatureFlagComponent,
     LoginComponent,
-    LogoutComponent,
-    ExternalRedirectComponent,
+    LogoutComponent,    
     SubscriptionComponent,
     TeamComponent
   ],

@@ -25,8 +25,8 @@ export class SubscriptionComponent implements OnInit {
       if (accessToken) {
         const nblocksClient = this.nblocksClientService.getNblocksClient();
         const codeResponse = await nblocksClient.auth.getHandoverCode(accessToken);
-        const selectPlanUrl = nblocksClient.portal.getSelectPlanUrl(codeResponse.code);
-        this.router.navigate(['/external', { externalUrl: selectPlanUrl }]);
+        const selectPlanUrl = nblocksClient.portal.getSelectPlanUrl(codeResponse.code);        
+        window.location.href = selectPlanUrl
       }
     } catch (error) {
       console.error(error);

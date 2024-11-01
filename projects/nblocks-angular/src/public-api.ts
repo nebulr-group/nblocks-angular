@@ -16,6 +16,5 @@ export * from './lib/nblocks/components/callback.component';
 export * from './lib/nblocks/components/feature-flag.component';
 export * from './lib/nblocks/components/login.component';
 export * from './lib/nblocks/components/logout.component';
-export * from './lib/nblocks/components/external-redirect.component';
 export * from './lib/nblocks/components/subscription.component';
 export * from './lib/nblocks/components/team.component';

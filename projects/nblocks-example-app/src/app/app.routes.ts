@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { CallbackComponent, LoginComponent, LogoutComponent, ProtectedRouteGuard } from 'nblocks-angular';
+import { CallbackComponent, LoginComponent, LogoutComponent, ProtectedRouteGuard, SubscriptionComponent, TeamComponent } from 'nblocks-angular';
 
 export const routes: Routes = [
     {
@@ -19,5 +19,13 @@ export const routes: Routes = [
     {
         path:'auth/oauth-callback',
         component: CallbackComponent
+    },
+    {
+        path:'team',
+        component: TeamComponent
+    },
+    {
+        path:'subscriptions',
+        component: SubscriptionComponent
     },
 ];
