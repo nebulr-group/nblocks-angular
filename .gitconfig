@@ -1,0 +1,5 @@
+[user]
+	email = iman@nebulr.group
+	name = Iman Pouya
+[credential]
+	helper = "!f() { /home/appuser/.cursor-server/bin/1649e229afdef8fd1d18ea173f063563f1e722e0/node /tmp/vscode-remote-containers-fc5a00db-3cdf-46d9-a376-b63c2e5c526a.js git-credential-helper $*; }; f"

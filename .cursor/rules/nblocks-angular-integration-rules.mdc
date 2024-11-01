@@ -1,0 +1,134 @@
+---
+description: Use this as a general guide when you are going to integrate nblocks with angular
+globs: 
+alwaysApply: false
+---
+
+# nBlocks Angular Integration Guidelines
+
+These instructions are for creating a reusable Angular SDK that integrates with the nBlocks platform for authentication, feature flags, and team management. The output should be a complete Angular library and a demo application.
+
+## 🧩 Integration Requirements
+
+### 🔐 Authentication
+
+#### Login Redirect
+
+1. Implement a `LoginComponent` that redirects to:
+   ```
+   https://auth.nblocks.cloud/url/login/{APP_ID}
+   ```
+2. `{APP_ID}` must be configurable using an Angular `InjectionToken`
+
+#### OAuth Callback
+
+1. Implement a `CallbackComponent` that handles the `/auth/oauth-callback` route
+2. Extract the code query param and POST it to:
+   ```
+   https://auth.nblocks.cloud/token/code/{APP_ID}
+   ```
+3. Expect `access_token`, `refresh_token`, and `id_token` in the response
+4. Verify and decode the access token using the JWKs endpoint:
+   ```
+   https://auth.nblocks.cloud/.well-known/jwks.json
+   ```
+5. Store tokens securely via `TokenService`
+
+#### Token Refresh
+
+1. Automatically refresh access tokens using `grant_type=refresh_token`
+2. Follow: [nBlocks API Docs – Get Tokens](mdc:https:/nebulr-group.github.io/nblocks-api-docs/#get-tokens)
+3. Use an `HttpInterceptor` to:
+   - Attach the `access_token` to outgoing HTTP requests
+   - Refresh on expiration and retry requests if needed
+
+## ✅ Library Functionality
+
+### Modules and Entry Point
+
+- `NBlocksModule`: Root module with a `forRoot()` method for configuration
+
+### Authentication Components
+
+- `LoginComponent`: Triggers login redirect
+- `CallbackComponent`: Handles OAuth callback and stores tokens
+
+### Routing and Access Control
+
+- `ProtectedRouteGuard`:
+  - Validates whether the user is authenticated by verifying the stored `access_token`
+  - Use logic inspired by `AuthContextHelper`:
+    - Verify token signature using JOSE/JWKS
+    - Confirm expected issuer and audience
+    - Extract claims such as `sub`, `email`, `tid`, and `scope`
+    - Optionally, allow role or privilege-based route access control via route data
+  - Redirect unauthenticated users to the login route
+
+### Token Management
+
+- `TokenService`: Handles storage, access, and renewal of tokens
+- Built-in automatic token refresh logic using an `HttpInterceptor`
+
+### Feature Flags
+
+- `FeatureFlagService`:
+  - Supports bulk and single flag evaluation
+- `FeatureFlagsComponent`:
+  - Structural directive for conditional rendering based on feature flags
+  - Example:
+    ```html
+    <div *nblocksFeature="'beta-ui'">This UI is in beta</div>
+    ```
+
+### Team Management
+
+- `TeamManagementService`: Launches the hosted team management UI
+
+## 🚀 Example Application
+
+Provide an Angular v19 demo app that uses the library and includes:
+
+- A login button (uses `LoginComponent`)
+- A callback route (uses `CallbackComponent`)
+- Protected routes (uses `ProtectedRouteGuard`)
+- UI showing:
+  - User's token claims
+  - Loaded feature flags
+  - A button to launch the team management interface
+- Use Angular Material for layout/UI if desired
+
+## 📦 Library Packaging
+
+Package name: `@nblocks/angular`
+
+Suggested structure:
+```
+libs/nblocks/
+  ├── components/
+  ├── services/
+  ├── guards/
+  ├── directives/
+  ├── interceptors/
+  ├── models/
+  ├── tokens/
+  └── nblocks.module.ts
+```
+
+- Provide a public API and configuration via `NBlocksModule.forRoot({...})`
+- Include usage examples and documentation
+
+## 🔗 Reference Links
+
+- 🔐 Token exchange (OAuth2): [nBlocks API Docs – Get Tokens](mdc:https:/nebulr-group.github.io/nblocks-api-docs/#get-tokens)
+- 🚩 Feature Flag API:
+  - [Evaluate a Flag](mdc:https:/nebulr-group.github.io/nblocks-api-docs/#evaluate-a-flag)
+  - [Evaluate Flags in Bulk](mdc:https:/nebulr-group.github.io/nblocks-api-docs/#evaluate-flags-in-bulk)
+- 👥 Team Management UI: [User Management Portal Docs](mdc:https:/nebulr-group.github.io/nblocks-docs/docs/authentication-and-access/user-management-portal)
+- 🔑 JWKS for token verification: [JWKS Endpoint](mdc:https:/auth.nblocks.cloud/.well-known/jwks.json)
+
+## 🧠 Reference Implementation
+
+Use the pattern from the provided `AuthContextHelper` that:
+- Verifies tokens with `jwtVerify`
+- Checks issuer/audience
+- Extracts structured claims for access control 

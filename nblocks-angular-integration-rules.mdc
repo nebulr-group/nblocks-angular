@@ -1,0 +1,156 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# nBlocks Angular Integration Guidelines
+
+[... existing content ...]
+
+## 🏗️ Angular-Specific Implementation Patterns
+
+### Standalone Components
+- Use standalone components for better tree-shaking and modularity
+- Import only necessary dependencies in each component
+```typescript
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule],
+  // ...
+})
+export class LoginComponent {}
+```
+
+### Route Organization
+- Use lazy loading for all nBlocks feature routes
+- Keep routes under the `/nblocks` prefix for clarity:
+```typescript
+export const routes: Routes = [
+  // Default Angular app route - preserve the standard experience
+  {
+    path: '',
+    component: AppComponent
+  },
+  
+  // nBlocks functionality
+  {
+    path: 'nblocks',
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login.component')
+          .then(m => m.LoginComponent)
+      },
+      {
+        path: 'auth/callback',
+        loadComponent: () => import('./features/auth/callback/callback.component')
+          .then(m => m.CallbackComponent)
+      }
+    ]
+  }
+]
+```
+
+### Service Integration
+- Use optional injection tokens for all services to support gradual adoption:
+```typescript
+@Injectable({ providedIn: 'root' })
+export class SomeComponent {
+  constructor(
+    @Optional() @Inject(NBLOCKS_TOKEN_SERVICE) private tokenService: TokenService
+  ) {
+    // Provide fallback behavior if service is not available
+    this.isAuthenticated$ = this.tokenService?.accessToken$().pipe(
+      map(token => !!token)
+    ) || of(false);
+  }
+}
+```
+
+### HTTP Interceptors
+- Use an HTTP interceptor for token management
+- Support automatic token refresh with retry logic:
+```typescript
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  constructor(private tokenService: TokenService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return next.handle(this.addToken(req)).pipe(
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.handle401Error(req, next);
+        }
+        throw error;
+      })
+    );
+  }
+}
+```
+
+### Feature Flag Directives
+- Provide both structural and attribute directives for feature flags
+- Support both cached and live checks:
+```typescript
+// Cached check (default)
+<div *nblocksFeature="'feature-name'">
+  Feature content
+</div>
+
+// Live check
+<div *nblocksFeature="'feature-name'; live: true">
+  Feature content
+</div>
+```
+
+### Progressive Enhancement
+- Make all nBlocks services optional using `@Optional()` decorator
+- Provide fallback UI/behavior when services are not available
+- Use RxJS observables with default values:
+```typescript
+this.featureEnabled$ = this.featureFlagService?.getFeatureFlag('flag-name') 
+  || of(false);
+```
+
+### Error Handling
+- Implement proper error handling for all async operations
+- Use Angular's error handling mechanisms:
+```typescript
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  handleError(error: Error) {
+    if (error instanceof NblocksAuthError) {
+      // Handle auth-specific errors
+    }
+    // ... handle other errors
+  }
+}
+```
+
+## 🔍 Testing Guidelines
+
+### Unit Tests
+- Mock nBlocks services using Angular's testing utilities:
+```typescript
+TestBed.configureTestingModule({
+  providers: [
+    {
+      provide: NBLOCKS_TOKEN_SERVICE,
+      useValue: mockTokenService
+    }
+  ]
+});
+```
+
+### Integration Tests
+- Test the integration between nBlocks services and components
+- Verify token refresh and error handling scenarios
+- Test feature flag directive behavior
+
+### E2E Tests
+- Include end-to-end tests for authentication flow
+- Test protected route access
+- Verify feature flag-based rendering
+
+[... rest of existing content ...] 

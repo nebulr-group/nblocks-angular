@@ -13,14 +13,18 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
+ENV USER=appuser
+ENV HOME=/home/$USER
+
+
 # Create a non-root user and set up their home directory
-RUN useradd -m -s /bin/zsh appuser
+RUN useradd -m -s /bin/zsh $USER
 
 # Set the working directory
-WORKDIR /home/appuser/app
+WORKDIR /home/$USER
 
 # Ensure the app directory is owned by appuser
-RUN chown appuser:appuser /home/appuser/app
+RUN chown $USER:$USER /home/$USER/
 
 # Install Angular CLI globally
 RUN npm install -g @angular/cli
@@ -55,16 +59,16 @@ ENV CHROME_BIN=/usr/bin/chromium
 
 
 # Change to non-root user
-USER appuser
+USER $USER
 
 # Copy package files with correct ownership
-COPY --chown=appuser:appuser ["package.json", "package-lock.json", "./"]
+#COPY --chown=$USER:$USER ["package.json", "package-lock.json", "./"]
 
 # Referring to base, and adding new build stage label 'dev'
 FROM base as dev
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy the rest of the application files
-COPY --chown=appuser:appuser . .
+COPY --chown=$USER:$USER . .
 
 # The working directory is already set to /home/appuser/app in the base stage

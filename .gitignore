@@ -8,8 +8,6 @@
 
 # Node
 /node_modules
-projects/nblocks-angular/node_modules
-projects/nblocks-example-app/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -42,7 +40,13 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-
-#test results
-test-results/
+.cache
+.node_repl_history
+.cursor-server
+.config
+.dotnet/
+.npm/
+.vscode-server/
+.pki
+.ssh/
+.npmrc

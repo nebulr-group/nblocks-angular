@@ -4,10 +4,21 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "start",
+      "script": "start:demo",
       "isBackground": true,
+      "presentation": {
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${workspaceRoot}"],
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
@@ -15,7 +26,7 @@
             "regexp": "(.*?)"
           },
           "endsPattern": {
-            "regexp": "bundle generation complete"
+            "regexp": "Compiled successfully|Failed to compile"
           }
         }
       }

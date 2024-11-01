@@ -7,7 +7,11 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     volumes:
-      - ./:/home/appuser/app
+      - ./:/home/appuser/
+      - ../:/home/appuser/nblocks-plugins/nblocks-ts-client  #FIXME binds to the nblocks-plugins folder in the root of the project make sure to remove before publishing
+      - ../:/home/appuser/nblocks-plugins/nblocks-react  #FIXME binds to the nblocks-plugins folder in the root of the project make sure to remove before publishing
+      
+
     restart: unless-stopped    
     stdin_open: true
     tty: true

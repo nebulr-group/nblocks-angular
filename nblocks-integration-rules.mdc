@@ -1,0 +1,221 @@
+# nBlocks Integration Guidelines
+
+These instructions are for large language models (LLMs) tasked with creating an SDK or integration for nBlocks in any language or framework. The integration should handle authentication, token management, feature flags, and team management. The output should be a developer-friendly, reusable package and an example application.
+
+## 📌 Integration Goals
+
+Create an SDK that supports:
+
+- Redirecting to nBlocks login
+- Handling the OAuth callback and exchanging authorization codes for tokens
+- Storing and refreshing access tokens
+- Evaluating feature flags (single and bulk)
+- Launching the team management interface
+- Wrapping the above into idiomatic, framework-specific constructs
+- Creating a working example app to demonstrate SDK usage
+- Make sure that the working example app and the sdk are in the same workspace but in separate projects.
+
+## 🔄 Integration Philosophy
+
+- Treat nBlocks as an extension to existing applications, not a replacement
+- Allow developers to maintain their default application structure
+- Make it clear which parts are nBlocks and which are native application features
+- Provide easy navigation between standard app features and nBlocks features
+
+## 🛣️ Route Organization
+
+- Keep the default framework experience intact (e.g., Angular's welcome page)
+- Place all nBlocks functionality under a dedicated prefix (e.g., `/nblocks/`)
+- Structure routes to clearly separate nBlocks features:
+  ```typescript
+  {
+    path: 'nblocks',
+    children: [
+      { path: 'login', ... },
+      { path: 'auth/callback', ... },
+      { path: 'dashboard', ... },
+      { path: 'team', ... }
+    ]
+  }
+  ```
+
+## 🔌 Service Integration Patterns
+
+- Support both framework-specific and standard dependency patterns
+- Allow service overrides for customization:
+  ```typescript
+  // Example patterns (framework specific):
+  
+  // Angular
+  const tokenService = new InjectionToken<TokenService>('TokenService');
+  
+  // React Context
+  const TokenServiceContext = createContext<TokenService>(defaultService);
+  
+  // Vue Provide/Inject
+  app.provide('tokenService', service);
+  
+  // Generic Module Pattern
+  class NblocksModule {
+    configure(options: { tokenService?: CustomTokenService }) {
+      // Allow service override
+    }
+  }
+  ```
+- Make services optional to support gradual adoption
+- Provide default implementations that can be extended or replaced
+- Follow the framework's idiomatic patterns for service management
+
+## 🧭 Navigation Patterns
+
+- Always provide a way back to the main application
+- Include clear visual indicators for nBlocks-specific features
+- Use consistent navigation patterns across all nBlocks routes
+- Example navigation structure:
+  ```html
+  <nav>
+    <!-- Standard App Navigation -->
+    <a href="/">Home</a>
+    
+    <!-- nBlocks Navigation -->
+    <a href="/nblocks/dashboard">Dashboard</a>
+    <a href="/nblocks/team">Team</a>
+  </nav>
+  ```
+
+## 📈 Progressive Enhancement
+
+- Allow applications to start with minimal nBlocks integration
+- Support incremental adoption of features
+- Make each nBlocks feature independently adoptable
+- Provide fallback behavior when services are not available
+
+## 🔐 Authentication
+
+[... rest of the existing content ...]
+
+## 👤 Profile Management
+
+### 8. Profile from ID Token
+
+1. Extract user profile information from the ID token payload:
+   ```typescript
+   interface IDToken {
+     sub: string;                 // User ID
+     preferred_username: string;  // Username
+     email: string;              // Email address
+     email_verified: boolean;    // Email verification status
+     name: string;              // Full name
+     family_name: string;       // Family name
+     given_name: string;        // Given name
+     locale: string;            // User locale
+     onboarded: boolean;        // User onboarding status
+     multi_tenant: boolean;     // Multi-tenant access flag
+     tenant_id?: string;        // Current tenant ID
+     tenant_name?: string;      // Current tenant name
+     tenant_locale?: string;    // Current tenant locale
+     tenant_logo?: string;      // Current tenant logo URL
+     tenant_onboarded?: boolean; // Current tenant onboarding status
+   }
+   ```
+
+2. Transform ID token data into a user-friendly profile:
+   ```typescript
+   interface Profile {
+     id: string;               // From sub claim
+     username: string;         // From preferred_username
+     email: string;
+     emailVerified: boolean;
+     fullName: string;
+     familyName: string;
+     givenName: string;
+     locale: string;
+     onboarded: boolean;
+     multiTenantAccess: boolean;
+     tenant?: {
+       id: string;
+       name: string;
+       locale: string;
+       logo: string;
+       onboarded: boolean;
+     };
+   }
+   ```
+
+### Profile Service Requirements
+
+**Service Layer**
+```typescript
+interface ProfileService {
+  // Profile stream
+  profile$: Observable<Profile | null>;  // Stream of current profile
+  
+  // Synchronous access
+  getCurrentProfile(): Profile | null;   // Get current profile
+  
+  // Profile state
+  isOnboarded(): Observable<boolean>;    // Stream of onboarding status
+  hasMultiTenantAccess(): Observable<boolean>; // Stream of multi-tenant access
+  
+  // State management
+  clearProfile(): void;                  // Clear current profile
+}
+```
+
+### Implementation Requirements
+
+1. **Token Verification**
+   - Verify ID token using JWKS from well-known endpoint
+   - Validate issuer and audience claims
+   - Handle token expiration gracefully
+
+2. **Profile Updates**
+   - Update profile when ID token changes
+   - Clear profile on logout
+   - Handle verification errors appropriately
+
+3. **Error Handling**
+   - Handle invalid tokens
+   - Handle expired tokens
+   - Handle JWKS fetch failures
+   - Provide appropriate error types:
+     ```typescript
+     class TokenExpiredError extends Error {}
+     class InvalidTokenError extends Error {}
+     class JwksError extends Error {}
+     ```
+
+### Best Practices
+1. Use reactive patterns with observables for profile updates
+2. Cache JWKS for performance
+3. Implement proper cleanup for observable subscriptions
+4. Handle all error cases gracefully
+5. Provide type-safe access to profile data
+6. Update profile state when tokens change
+
+### UI Integration Example
+```typescript
+// Profile display in template
+<div *ngIf="profile$ | async as profile">
+  <span>Welcome, {{ profile.username }}</span>
+  <div *ngIf="profile.tenant">
+    <img [src]="profile.tenant.logo" alt="Tenant Logo">
+    <span>{{ profile.tenant.name }}</span>
+  </div>
+</div>
+
+// Profile usage in component
+@Component({
+  template: `...`
+})
+export class MyComponent {
+  constructor(private profileService: ProfileService) {
+    // Stream of profile data
+    this.profile$ = this.profileService.profile$;
+    
+    // Check specific states
+    this.isOnboarded$ = this.profileService.isOnboarded();
+    this.hasMultiTenantAccess$ = this.profileService.hasMultiTenantAccess();
+  }
+}
+``` 

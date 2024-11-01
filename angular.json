@@ -3,42 +3,71 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "nblocks-example-app": {
+    "nblocks": {
+      "projectType": "library",
+      "root": "projects/nblocks",
+      "sourceRoot": "projects/nblocks/src",
+      "prefix": "nblocks",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/nblocks/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/nblocks/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/nblocks/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/nblocks/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "basic": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/nblocks-example-app",
-      "sourceRoot": "projects/nblocks-example-app/src",
+      "root": "projects/basic",
+      "sourceRoot": "projects/basic/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/nblocks-example-app",
-            "index": "projects/nblocks-example-app/src/index.html",
-            "browser": "projects/nblocks-example-app/src/main.ts",
+            "outputPath": "dist/basic",
+            "index": "projects/basic/src/index.html",
+            "browser": "projects/basic/src/main.ts",
             "polyfills": [
-              "zone.js",
-              "zone.js/testing",
-              "node_modules/process/browser.js"              
+              "zone.js"
             ],
-            "tsConfig": "projects/nblocks-example-app/tsconfig.app.json",
+            "tsConfig": "projects/basic/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/nblocks-example-app/public"
+                "input": "projects/basic/public"
               }
             ],
             "styles": [
-              "projects/nblocks-example-app/src/styles.scss"
+              "projects/basic/src/styles.scss"
             ],
-            "scripts": [            
-            ],
-            "preserveSymlinks": true
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -50,8 +79,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -68,10 +97,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "nblocks-example-app:build:production"
+              "buildTarget": "basic:build:production"
             },
             "development": {
-              "buildTarget": "nblocks-example-app:build:development"
+              "buildTarget": "basic:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,58 +115,116 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/nblocks-example-app/tsconfig.spec.json",
+            "tsConfig": "projects/basic/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/nblocks-example-app/public"
+                "input": "projects/basic/public"
               }
             ],
             "styles": [
-              "projects/nblocks-example-app/src/styles.scss"
+              "projects/basic/src/styles.scss"
             ],
             "scripts": []
           }
         }
       }
     },
-    "nblocks-angular": {
-      "projectType": "library",
-      "root": "projects/nblocks-angular",
-      "sourceRoot": "projects/nblocks-angular/src",
-      "prefix": "lib",
+    "demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/demo",
+      "sourceRoot": "projects/demo/src",
+      "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "project": "projects/nblocks-angular/ng-package.json"
+            "outputPath": "dist/demo",
+            "index": "projects/demo/src/index.html",
+            "browser": "projects/demo/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/demo/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/demo/public"
+              }
+            ],
+            "styles": [
+              "projects/demo/src/styles.scss"
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/nblocks-angular/tsconfig.lib.prod.json"
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
             },
             "development": {
-              "tsConfig": "projects/nblocks-angular/tsconfig.lib.json"
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
         },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "demo:build:production"
+            },
+            "development": {
+              "buildTarget": "demo:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "karmaConfig": "karma.conf.js",
-            "tsConfig": "projects/nblocks-angular/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ]
+            ],
+            "tsConfig": "projects/demo/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/demo/public"
+              }
+            ],
+            "styles": [
+              "projects/demo/src/styles.scss"
+            ],
+            "scripts": []
           }
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }
