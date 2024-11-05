@@ -15,7 +15,7 @@
 
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
-	"workspaceFolder": "/home/appuser/app",
+	"workspaceFolder": "/home/appuser",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [4200],
@@ -31,7 +31,7 @@
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
-			"extensions": [
+			"extensions": [				
 				"Angular.ng-template",
 				"ms-azuretools.vscode-docker",
 				"mhutchie.git-graph"
