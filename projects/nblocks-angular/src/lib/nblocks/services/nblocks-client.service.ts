@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NblocksPublicClient } from '@nebulr-group/nblocks-ts-client';
+import { NblocksPublicClient } from '@nebulr-group/nblocks-ts-client/core-api';
 import { NblocksConfigService } from './nblocks-config.service';
 import { LogService } from './log.service';
 

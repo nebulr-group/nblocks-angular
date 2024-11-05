@@ -3,7 +3,6 @@
  */
 
 export * from './lib/nblocks/nblocks.module';
-export * from './lib/nblocks/models/nblocks-config.model';
 export * from './lib/nblocks/services/nblocks-config.service';
 export * from './lib/nblocks/services/token.service';
 export * from './lib/nblocks/services/log.service';

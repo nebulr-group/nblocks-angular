@@ -5,7 +5,7 @@ import { LogService } from './log.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { TokenRefresher } from '../core/token-refresher';
+import { TokenRefresher } from '@nebulr-group/nblocks-ts-client/engine';
 
 @Injectable({
   providedIn: 'root'
@@ -31,10 +31,11 @@ export class TokenRefresherService implements OnDestroy {
           access_token: response.tokens.access_token,
           refresh_token: response.tokens.refresh_token,
           id_token: response.tokens.id_token,
-          expires_in: response.tokens.expires_in
+          expires_in: response.tokens.expires_in,
+          token_type: 'Bearer'
         };
       },
-      onLog: (message) => this.logService.log(message),
+      logger: this.logService,
       onError: (error) => console.error(error)
     });
 

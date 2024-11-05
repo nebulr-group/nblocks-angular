@@ -15,15 +15,15 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/nblocks-example-app",
             "index": "projects/nblocks-example-app/src/index.html",
-            "browser": "projects/nblocks-example-app/src/main.ts",
+            "main": "projects/nblocks-example-app/src/main.ts",
             "polyfills": [
               "zone.js",
               "zone.js/testing",
-              "node_modules/process/browser.js"              
+              "node_modules/process/browser.js"
             ],
             "tsConfig": "projects/nblocks-example-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -38,7 +38,7 @@
             ],
             "scripts": [            
             ],
-            "preserveSymlinks": true
+            "preserveSymlinks": true         
           },
           "configurations": {
             "production": {

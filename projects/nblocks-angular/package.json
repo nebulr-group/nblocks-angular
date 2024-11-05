@@ -5,13 +5,12 @@
     "@angular/common": "^18.2.0",
     "@angular/core": "^18.2.0",
     "@angular/router": "^18.2.0",
-    "rxjs": "~7.8.0",
-    "process": "^0.11.10"
-        
+    "process": "^0.11.10",
+    "rxjs": "~7.8.0"
   },
   "dependencies": {
-    "tslib": "^2.3.0",        
-    "@nebulr-group/nblocks-ts-client": "^5.4.1"    
+    "@nebulr-group/nblocks-ts-client": "^5.4.1",
+    "tslib": "^2.3.0"
   },
-  "sideEffects": false 
+  "sideEffects": false
 }

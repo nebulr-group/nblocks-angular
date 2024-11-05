@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { LogService } from './log.service';
 import { NblocksConfigService } from './nblocks-config.service';
-import { NblocksConfig } from '../models/nblocks-config.model';
+import { NblocksPluginConfig } from '@nebulr-group/nblocks-ts-client/engine';
 
 describe('LogService', () => {
   let service: LogService;
   let mockConfigService: jasmine.SpyObj<NblocksConfigService>;
 
-  const mockConfig: NblocksConfig = {
+  const mockConfig: NblocksPluginConfig = {
     appId: 'test-app',
     handoverPath: '/',
     debug: true,

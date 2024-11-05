@@ -9,13 +9,13 @@ import { LogoutComponent } from './components/logout.component';
 import { SubscriptionComponent } from './components/subscription.component';
 import { TeamComponent } from './components/team.component';
 import { ProtectedRouteGuard } from './guards/protected-route.guard';
-import { NblocksConfig } from './models/nblocks-config.model';
 import { FlagsService } from './services/flags.service';
 import { LogService } from './services/log.service';
 import { NblocksClientService } from './services/nblocks-client.service';
 import { NblocksConfigService } from './services/nblocks-config.service';
 import { TokenRefresherService } from './services/token-refresher.service';
 import { TokenService } from './services/token.service';
+import { NblocksPluginConfig } from '@nebulr-group/nblocks-ts-client/engine';
 
 @NgModule({
   declarations: [
@@ -46,7 +46,7 @@ import { TokenService } from './services/token.service';
   ]
 })
 export class NblocksModule {
-  static forRoot(config: Partial<NblocksConfig>): ModuleWithProviders<NblocksModule> {
+  static forRoot(config: Partial<NblocksPluginConfig>): ModuleWithProviders<NblocksModule> {
     return {
       ngModule: NblocksModule,
       providers: [

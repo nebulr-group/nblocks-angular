@@ -18,9 +18,15 @@ yarn-error.log
 .project
 .classpath
 .c9/
+.cache
 *.launch
 .settings/
 *.sublime-workspace
+.cursor-server
+.ssh
+.pki
+nblocks-plugins
+.config
 
 # Visual Studio Code
 .vscode/*
@@ -38,6 +44,9 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+.npm
+
+.angular
 
 # System files
 .DS_Store

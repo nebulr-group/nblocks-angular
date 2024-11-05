@@ -3,8 +3,8 @@ import { BehaviorSubject, Observable, from, firstValueFrom } from 'rxjs';
 import { NblocksClientService } from './nblocks-client.service';
 import { TokenService } from './token.service';
 import { LogService } from './log.service';
-import { BulkEvaluationResponse, FlagContext } from '@nebulr-group/nblocks-ts-client';
-import { FlagsManager } from '../core/flags-manager';
+import { BulkEvaluationResponse, FlagContext } from '@nebulr-group/nblocks-ts-client/core-api';
+import { FlagsManager } from '@nebulr-group/nblocks-ts-client/engine';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,7 @@ export class FlagsService {
     this.flagsManager = new FlagsManager({
       getFlagsClient: () => this.nblocksClientService.getNblocksClient().flag,
       onFlagsUpdated: (flags) => this.flagsStorageSubject.next(flags),
-      onLog: (message) => this.logService.log(message),
+      logger: this.logService,
       onError: (error) => {
         this.logService.logError('Flag evaluation failed:', error);
         console.error(error);

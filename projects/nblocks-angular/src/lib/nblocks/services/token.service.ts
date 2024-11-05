@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenManager } from '../core/token-manager';
+import { TokenManager } from '@nebulr-group/nblocks-ts-client/engine';
 import { NblocksClientService } from './nblocks-client.service';
 
 @Injectable({

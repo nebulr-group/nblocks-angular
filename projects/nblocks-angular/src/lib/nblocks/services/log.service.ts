@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Log } from '../core/log';
+import {Log} from "@nebulr-group/nblocks-ts-client/engine";
 import { NblocksConfigService } from './nblocks-config.service';
-
 
 @Injectable({
   providedIn: 'root'

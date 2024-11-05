@@ -1,6 +1,6 @@
 {
   "name": "nblocks-angular",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -28,12 +28,11 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
-    "@nebulr-group/nblocks-ts-client": "^5.4.1",
+    "@nebulr-group/nblocks-ts-client": "^5.4.7",
     "@types/karma-coverage": "^2.0.3",
-    "process": "^0.11.10",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10"    
+    "zone.js": "~0.14.10"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.9",
@@ -41,6 +40,7 @@
     "@angular/compiler-cli": "^18.2.0",
     "@types/jasmine": "~5.1.0",
     "@types/karma": "^6.3.9",
+    "@types/node": "^22.9.0",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -49,7 +49,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^18.2.0",
+    "process": "^0.11.10",
     "ts-node": "^10.9.2",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.2",
+    "webpack": "^5.96.1"
   }
 }

@@ -5,7 +5,7 @@ import { NblocksClientService } from '../nblocks-client.service';
 import { TokenService } from '../token.service';
 import { LogService } from '../log.service';
 import { of, BehaviorSubject } from 'rxjs';
-import { BulkEvaluationResponse, FlagContext, NblocksPublicClient } from '@nebulr-group/nblocks-ts-client';
+import { BulkEvaluationResponse, FlagContext, NblocksPublicClient } from '@nebulr-group/nblocks-ts-client/core-api';
 import { NblocksConfigService } from '../nblocks-config.service';
 
 
@@ -65,6 +65,7 @@ describe('FlagsService Integration Test', () => {
     });
   });
 
+  //FIXME flags should acttually be available when no accessToken is available
   it('should log error if accessToken is not available', (done) => {
     const mockResponse: BulkEvaluationResponse = {
         flags: [{ flag: 'testFlag', evaluation: { enabled: true } }],

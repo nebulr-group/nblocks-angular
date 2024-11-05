@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-
-import { ConfigManager } from '../core/config-manager';
+import { ConfigManager } from '@nebulr-group/nblocks-ts-client/engine';
 
 @Injectable({
   providedIn: 'root'

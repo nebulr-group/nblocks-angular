@@ -15,10 +15,12 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "nblocks-angular": [
-        "./dist/nblocks-angular"
-      ]
+        "projects/nblocks-angular/src/public-api"
+      ],  
+      "process": ["./node_modules/process/browser.js"]
     },
-    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
@@ -29,7 +31,9 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "esModuleInterop": true,
+    "types": ["node"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
